@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_0f173c57726695acc4aae8d132f441ca {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    <script src="https://cdn.jsdelivr.net/gh/ljagis/leaflet-measure@2.1.7/dist/leaflet-measure.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ljagis/leaflet-measure@2.1.7/dist/leaflet-measure.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.css"/>
+    <script src="https://cdn.jsdelivr.net/gh/ardhi/Leaflet.MousePosition/src/L.Control.MousePosition.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ardhi/Leaflet.MousePosition/src/L.Control.MousePosition.min.css"/>
+</head>
+<body>
+    
+    
+    <div style="position: fixed; top: 70px; right: 10px; width: 350px; 
+                background-color: white; border: 2px solid #0066cc; z-index: 9999; 
+                font-size: 12px; padding: 15px; border-radius: 8px; 
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-height: 80vh; overflow-y: auto;">
+        <h4 style="margin: 0 0 10px 0; color: #0066cc;">📊 Données de Triangulation</h4>
+        <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+            <thead>
+                <tr style="background-color: #f0f0f0; border-bottom: 2px solid #0066cc;">
+                    <th style="padding: 5px; text-align: center;">#</th>
+                    <th style="padding: 5px;">Nom</th>
+                    <th style="padding: 5px; text-align: right;">Azimut</th>
+                    <th style="padding: 5px; text-align: center;">Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+    
+                <tr style="background-color: #f9f9f9; border-bottom: 1px solid #ddd;">
+                    <td style="padding: 5px; text-align: center; font-weight: bold;">1</td>
+                    <td style="padding: 5px;">Mont Nord</td>
+                    <td style="padding: 5px; text-align: right;">360.0°</td>
+                    <td style="padding: 5px; text-align: center; color: red; font-weight: bold;">✗</td>
+                </tr>
+        
+                <tr style="background-color: #fff; border-bottom: 1px solid #ddd;">
+                    <td style="padding: 5px; text-align: center; font-weight: bold;">2</td>
+                    <td style="padding: 5px;">Pic Est</td>
+                    <td style="padding: 5px; text-align: right;">30.0°</td>
+                    <td style="padding: 5px; text-align: center; color: green; font-weight: bold;">✓</td>
+                </tr>
+        
+                <tr style="background-color: #fff; border-bottom: 1px solid #ddd;">
+                    <td style="padding: 5px; text-align: center; font-weight: bold;">3</td>
+                    <td style="padding: 5px;">Crête Ouest</td>
+                    <td style="padding: 5px; text-align: right;">210.0°</td>
+                    <td style="padding: 5px; text-align: center; color: green; font-weight: bold;">✓</td>
+                </tr>
+        
+                <tr style="background-color: #fff; border-bottom: 1px solid #ddd;">
+                    <td style="padding: 5px; text-align: center; font-weight: bold;">4</td>
+                    <td style="padding: 5px;">Vallée</td>
+                    <td style="padding: 5px; text-align: right;">200.0°</td>
+                    <td style="padding: 5px; text-align: center; color: green; font-weight: bold;">✓</td>
+                </tr>
+        
+            </tbody>
+        </table>
+        <div style="margin-top: 10px; padding: 8px; background-color: #e6f2ff; border-radius: 4px;">
+            <p style="margin: 3px 0; font-size: 11px;"><b>Position Table:</b> (-3913.0, 2662.2)</p>
+            <p style="margin: 3px 0; font-size: 11px;"><b>Orientation φ:</b> 313.16°</p>
+            <p style="margin: 3px 0; font-size: 11px;"><b>Résiduel:</b> 4.788 m</p>
+            <p style="margin: 3px 0; font-size: 11px; color: green;"><b>Inliers:</b> 3/4</p>
+            <p style="margin: 3px 0; font-size: 11px; color: red;"><b>Outliers éliminés:</b> 1</p>
+        </div>
+    </div>
+    
+    
+    <div style="position: fixed; 
+                bottom: 50px; left: 50px; width: 280px; 
+                background-color: white; border: 2px solid #0066cc; z-index: 9999; 
+                font-size: 13px; padding: 15px; border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h4 style="margin: 0 0 10px 0; color: #0066cc;">📋 Légende</h4>
+    <p style="margin: 5px 0;"><i class="fa fa-compass" style="color:blue"></i> <b>Table d'orientation</b></p>
+    <p style="margin: 5px 0;"><span style="display:inline-block; width:20px; height:20px; 
+       background-color:red; border-radius:50%; text-align:center; color:white; font-size:10px; 
+       line-height:20px;">1</span> <b>Curiosités</b> (numérotées)</p>
+    <p style="margin: 5px 0;"><span style="color:green; font-weight:bold;">━━━</span> Ligne de visée (inlier)</p>
+    <p style="margin: 5px 0;"><span style="color:orange; font-weight:bold;">╍╍╍</span> Rétro-azimut (inlier)</p>
+    <p style="margin: 5px 0;"><span style="color:gray; font-weight:bold;">- - -</span> Outliers (éliminés)</p>
+    <hr style="margin: 10px 0; border: none; border-top: 1px solid #ddd;">
+    <p style="font-size: 11px; margin: 5px 0; color: #666;">
+    <i>💡 Les rétro-azimuts des points valides se croisent à la position de la table</i>
+    </p>
+    <p style="font-size: 10px; margin: 5px 0; color: #999;">
+    Algorithme: <b>RANSAC</b> | Résiduel: <b>4.788m</b>
+    </p>
+    </div>
+    
+    
+    <div style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%); 
+                width: 600px; background-color: rgba(255,255,255,0.95); 
+                border: 3px solid #0066cc; z-index: 9999; 
+                padding: 15px; border-radius: 10px; text-align: center;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+        <h3 style="margin: 0; color: #0066cc;">📍 Triangulation de Table d'Orientation</h3>
+        <p style="margin: 5px 0; font-size: 13px; color: #333;">
+            Algorithme RANSAC | 3 points valides / 4 observations
+        </p>
+        <p style="margin: 5px 0; font-size: 12px; color: #666;">
+            Résiduel: <b style="color: green;">4.788 m</b> 
+            | Précision: <b>Excellente ✓</b>
+        </p>
+    </div>
+    
+    
+            <div class="folium-map" id="map_0f173c57726695acc4aae8d132f441ca" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_0f173c57726695acc4aae8d132f441ca = L.map(
+                "map_0f173c57726695acc4aae8d132f441ca",
+                {
+                    center: [45.20026827828909, 5.737252007349772],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 14,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+            L.control.scale().addTo(map_0f173c57726695acc4aae8d132f441ca);
+
+            
+
+        
+    
+            var tile_layer_813f5ee4b314f72943db5a224ef66e87 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_813f5ee4b314f72943db5a224ef66e87.addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+            map_0f173c57726695acc4aae8d132f441ca.fitBounds(
+                [[45.19105655729993, 5.674480454115388], [45.222530002849595, 5.7756311459986405]],
+                {"padding": [50, 50]}
+            );
+        
+    
+            var tile_layer_c068ceab2c98bb7c1a126d2059827006 = L.tileLayer(
+                "https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
+  "noWrap": false,
+  "attribution": "Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under ODbL.",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_c068ceab2c98bb7c1a126d2059827006.addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+            var tile_layer_d5086528eee8e280bdbabacb32db63f9 = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_d5086528eee8e280bdbabacb32db63f9.addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+            var marker_758c880c09353406625109e9aeee43a6 = L.marker(
+                [45.222530002849595, 5.674480454115388],
+                {
+}
+            ).addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+            var icon_9168a2786618dc90a990796477e05bb4 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "compass",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_ddf4525ce87d56ff8615d827a611e958 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_848b548b193951dfb8d2a9b5a6c4c942 = $(`<div id="html_848b548b193951dfb8d2a9b5a6c4c942" style="width: 100.0%; height: 100.0%;">     <div style="font-family: Arial, sans-serif; min-width: 250px;">         <h4 style="margin: 0 0 10px 0; color: #0066cc;">📍 Table d'Orientation</h4>         <table style="width: 100%; font-size: 12px;">             <tr><td><b>Latitude:</b></td><td>45.222530°</td></tr>             <tr><td><b>Longitude:</b></td><td>5.674480°</td></tr>             <tr><td><b>Orientation φ:</b></td><td>313.16°</td></tr>             <tr><td><b>Résiduel:</b></td><td>4.788 m</td></tr>             <tr><td><b>Points valides:</b></td><td>3/4</td></tr>             <tr><td><b>Outliers éliminés:</b></td><td style="color: red;">1</td></tr>         </table>         <p style="font-size: 10px; margin-top: 10px; color: #666;">             <i>✓ Position estimée par RANSAC</i>         </p>     </div>     </div>`)[0];
+                popup_ddf4525ce87d56ff8615d827a611e958.setContent(html_848b548b193951dfb8d2a9b5a6c4c942);
+            
+        
+
+        marker_758c880c09353406625109e9aeee43a6.bindPopup(popup_ddf4525ce87d56ff8615d827a611e958)
+        ;
+
+        
+    
+    
+            marker_758c880c09353406625109e9aeee43a6.bindTooltip(
+                `<div>
+                     📍 Table d'orientation (clique pour détails)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_758c880c09353406625109e9aeee43a6.setIcon(icon_9168a2786618dc90a990796477e05bb4);
+            
+    
+            var circle_48818970016bf7eecd5cb778f5f1babe = L.circle(
+                [45.222530002849595, 5.674480454115388],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 20, "stroke": true, "weight": 3}
+            ).addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+        var popup_505e4aee36dcbbc85628434a4577aaca = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_7b15099c4b20399076c0c7e4a41324d6 = $(`<div id="html_7b15099c4b20399076c0c7e4a41324d6" style="width: 100.0%; height: 100.0%;">Zone de la table</div>`)[0];
+                popup_505e4aee36dcbbc85628434a4577aaca.setContent(html_7b15099c4b20399076c0c7e4a41324d6);
+            
+        
+
+        circle_48818970016bf7eecd5cb778f5f1babe.bindPopup(popup_505e4aee36dcbbc85628434a4577aaca)
+        ;
+
+        
+    
+    
+            var marker_9cfc1acb9496cbec8d0b7c033164747d = L.marker(
+                [45.19105655729993, 5.7615700808490145],
+                {
+}
+            ).addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+            var div_icon_9feff40abebf62309dd5805687b9a900 = L.divIcon({
+  "html": "\n        \u003cdiv style=\"font-size: 14px; font-weight: bold; \n                    color: white; background-color: #999; \n                    border-radius: 50%; width: 30px; height: 30px; \n                    display: flex; align-items: center; justify-content: center;\n                    border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);\"\u003e\n            1\n        \u003c/div\u003e\n        ",
+  "className": "empty",
+});
+        
+    
+        var popup_8e0852b384108117e84686cb9adceb30 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_e646e93169ff32f8a469ebaf23632a7f = $(`<div id="html_e646e93169ff32f8a469ebaf23632a7f" style="width: 100.0%; height: 100.0%;">         <div style="font-family: Arial, sans-serif; min-width: 250px;">             <h4 style="margin: 0 0 10px 0; color: #666;">🏔️ Mont Nord</h4>             <table style="width: 100%; font-size: 12px;">                 <tr><td><b>Point #:</b></td><td>1</td></tr>                 <tr><td><b>Latitude:</b></td><td>45.191057°</td></tr>                 <tr><td><b>Longitude:</b></td><td>5.761570°</td></tr>                 <tr><td><b>Azimut gravé:</b></td><td>360.0°</td></tr>                 <tr><td><b>Azimut corrigé:</b></td><td>313.2°</td></tr>                 <tr><td><b>Distance table:</b></td><td>7244 m</td></tr>                 <tr><td><b>Statut:</b></td><td style="color: red;">                     ✗ Outlier (éliminé)                 </td></tr>             </table>         </div>         </div>`)[0];
+                popup_8e0852b384108117e84686cb9adceb30.setContent(html_e646e93169ff32f8a469ebaf23632a7f);
+            
+        
+
+        marker_9cfc1acb9496cbec8d0b7c033164747d.bindPopup(popup_8e0852b384108117e84686cb9adceb30)
+        ;
+
+        
+    
+    
+            marker_9cfc1acb9496cbec8d0b7c033164747d.bindTooltip(
+                `<div>
+                     #1 Mont Nord ✗
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_9cfc1acb9496cbec8d0b7c033164747d.setIcon(div_icon_9feff40abebf62309dd5805687b9a900);
+            
+    
+            var poly_line_ede41a23f9a976f0a84b2a5779090ef9 = L.polyline(
+                [[45.222530002849595, 5.674480454115388], [45.17588257735892, 5.718228582835569]],
+                {"bubblingMouseEvents": true, "color": "gray", "dashArray": "5, 5", "dashOffset": null, "fill": false, "fillColor": "gray", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.3, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+        var popup_322de5ea3d12da04206b6e92a01ac33f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_cfbba8ac330e2ea4eccd10ec8e3ae336 = $(`<div id="html_cfbba8ac330e2ea4eccd10ec8e3ae336" style="width: 100.0%; height: 100.0%;">⚠️ Outlier: Mont Nord (azimut 313.2°)</div>`)[0];
+                popup_322de5ea3d12da04206b6e92a01ac33f.setContent(html_cfbba8ac330e2ea4eccd10ec8e3ae336);
+            
+        
+
+        poly_line_ede41a23f9a976f0a84b2a5779090ef9.bindPopup(popup_322de5ea3d12da04206b6e92a01ac33f)
+        ;
+
+        
+    
+    
+            poly_line_ede41a23f9a976f0a84b2a5779090ef9.bindTooltip(
+                `<div>
+                     ✗ Outlier: Mont Nord
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_0685f66ecdb221baa0465632e180b1d9 = L.marker(
+                [45.20129556928616, 5.744965241185955],
+                {
+}
+            ).addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+            var div_icon_5336a1300fbbeb5373e883d360d8d8aa = L.divIcon({
+  "html": "\n        \u003cdiv style=\"font-size: 14px; font-weight: bold; \n                    color: white; background-color: darkred; \n                    border-radius: 50%; width: 30px; height: 30px; \n                    display: flex; align-items: center; justify-content: center;\n                    border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);\"\u003e\n            2\n        \u003c/div\u003e\n        ",
+  "className": "empty",
+});
+        
+    
+        var popup_ec6214ad3482c456568494dbd0e7a582 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_5cdadccc1a8883d8e5c0cb4a740b9841 = $(`<div id="html_5cdadccc1a8883d8e5c0cb4a740b9841" style="width: 100.0%; height: 100.0%;">         <div style="font-family: Arial, sans-serif; min-width: 250px;">             <h4 style="margin: 0 0 10px 0; color: #cc0000;">🏔️ Pic Est</h4>             <table style="width: 100%; font-size: 12px;">                 <tr><td><b>Point #:</b></td><td>2</td></tr>                 <tr><td><b>Latitude:</b></td><td>45.201296°</td></tr>                 <tr><td><b>Longitude:</b></td><td>5.744965°</td></tr>                 <tr><td><b>Azimut gravé:</b></td><td>30.0°</td></tr>                 <tr><td><b>Azimut corrigé:</b></td><td>343.2°</td></tr>                 <tr><td><b>Distance table:</b></td><td>5759 m</td></tr>                 <tr><td><b>Statut:</b></td><td style="color: green;">                     ✓ Inlier (valide)                 </td></tr>             </table>         </div>         </div>`)[0];
+                popup_ec6214ad3482c456568494dbd0e7a582.setContent(html_5cdadccc1a8883d8e5c0cb4a740b9841);
+            
+        
+
+        marker_0685f66ecdb221baa0465632e180b1d9.bindPopup(popup_ec6214ad3482c456568494dbd0e7a582)
+        ;
+
+        
+    
+    
+            marker_0685f66ecdb221baa0465632e180b1d9.bindTooltip(
+                `<div>
+                     #2 Pic Est ✓
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_0685f66ecdb221baa0465632e180b1d9.setIcon(div_icon_5336a1300fbbeb5373e883d360d8d8aa);
+            
+    
+            var poly_line_9bee2d4a1a7adc531e6ed5a4d5dcbd13 = L.polyline(
+                [[45.222530002849595, 5.674480454115388], [45.20400621171362, 5.735691157700433]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.7, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+        var popup_b3c019a30e1d30550ea0c3550ca82199 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0db35ca1898cd58ab03f269876cca1e3 = $(`<div id="html_0db35ca1898cd58ab03f269876cca1e3" style="width: 100.0%; height: 100.0%;">Ligne de visée vers Pic Est (azimut 343.2°)</div>`)[0];
+                popup_b3c019a30e1d30550ea0c3550ca82199.setContent(html_0db35ca1898cd58ab03f269876cca1e3);
+            
+        
+
+        poly_line_9bee2d4a1a7adc531e6ed5a4d5dcbd13.bindPopup(popup_b3c019a30e1d30550ea0c3550ca82199)
+        ;
+
+        
+    
+    
+            poly_line_9bee2d4a1a7adc531e6ed5a4d5dcbd13.bindTooltip(
+                `<div>
+                     Visée → Pic Est
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_1d48c6c2b4496b770325189249d5f8fc = L.polyline(
+                [[45.20129556928616, 5.744965241185955], [45.219812445625166, 5.683777387112898]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10, 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+        var popup_1389e7d96fa927b2a0f355055a9ea607 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0551e83366a4d8e1dfb1b79ee6041ed4 = $(`<div id="html_0551e83366a4d8e1dfb1b79ee6041ed4" style="width: 100.0%; height: 100.0%;">Rétro-azimut depuis Pic Est (azimut 163.2°)</div>`)[0];
+                popup_1389e7d96fa927b2a0f355055a9ea607.setContent(html_0551e83366a4d8e1dfb1b79ee6041ed4);
+            
+        
+
+        poly_line_1d48c6c2b4496b770325189249d5f8fc.bindPopup(popup_1389e7d96fa927b2a0f355055a9ea607)
+        ;
+
+        
+    
+    
+            poly_line_1d48c6c2b4496b770325189249d5f8fc.bindTooltip(
+                `<div>
+                     Rétro ← Pic Est
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_cdafc4f312749b2c721d6270fa7d91d1 = L.marker(
+                [45.19182352448991, 5.7756311459986405],
+                {
+}
+            ).addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+            var div_icon_bcab275ae87f1f40e5d447c48e94a01d = L.divIcon({
+  "html": "\n        \u003cdiv style=\"font-size: 14px; font-weight: bold; \n                    color: white; background-color: orange; \n                    border-radius: 50%; width: 30px; height: 30px; \n                    display: flex; align-items: center; justify-content: center;\n                    border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);\"\u003e\n            3\n        \u003c/div\u003e\n        ",
+  "className": "empty",
+});
+        
+    
+        var popup_75351fe97b8af803f30198f87cc37b63 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_6ff60873247b0d7383547ca4ae6c2ced = $(`<div id="html_6ff60873247b0d7383547ca4ae6c2ced" style="width: 100.0%; height: 100.0%;">         <div style="font-family: Arial, sans-serif; min-width: 250px;">             <h4 style="margin: 0 0 10px 0; color: #cc0000;">🏔️ Crête Ouest</h4>             <table style="width: 100%; font-size: 12px;">                 <tr><td><b>Point #:</b></td><td>3</td></tr>                 <tr><td><b>Latitude:</b></td><td>45.191824°</td></tr>                 <tr><td><b>Longitude:</b></td><td>5.775631°</td></tr>                 <tr><td><b>Azimut gravé:</b></td><td>210.0°</td></tr>                 <tr><td><b>Azimut corrigé:</b></td><td>163.2°</td></tr>                 <tr><td><b>Distance table:</b></td><td>8270 m</td></tr>                 <tr><td><b>Statut:</b></td><td style="color: green;">                     ✓ Inlier (valide)                 </td></tr>             </table>         </div>         </div>`)[0];
+                popup_75351fe97b8af803f30198f87cc37b63.setContent(html_6ff60873247b0d7383547ca4ae6c2ced);
+            
+        
+
+        marker_cdafc4f312749b2c721d6270fa7d91d1.bindPopup(popup_75351fe97b8af803f30198f87cc37b63)
+        ;
+
+        
+    
+    
+            marker_cdafc4f312749b2c721d6270fa7d91d1.bindTooltip(
+                `<div>
+                     #3 Crête Ouest ✓
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_cdafc4f312749b2c721d6270fa7d91d1.setIcon(div_icon_bcab275ae87f1f40e5d447c48e94a01d);
+            
+    
+            var poly_line_75809fbcf36d087898297e1f8900d090 = L.polyline(
+                [[45.222530002849595, 5.674480454115388], [45.24105379398557, 5.613269750530343]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.7, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+        var popup_51543985d90ce107077662997951d4ab = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_42fa1e956754718e6cd0f10b034c083d = $(`<div id="html_42fa1e956754718e6cd0f10b034c083d" style="width: 100.0%; height: 100.0%;">Ligne de visée vers Crête Ouest (azimut 163.2°)</div>`)[0];
+                popup_51543985d90ce107077662997951d4ab.setContent(html_42fa1e956754718e6cd0f10b034c083d);
+            
+        
+
+        poly_line_75809fbcf36d087898297e1f8900d090.bindPopup(popup_51543985d90ce107077662997951d4ab)
+        ;
+
+        
+    
+    
+            poly_line_75809fbcf36d087898297e1f8900d090.bindTooltip(
+                `<div>
+                     Visée → Crête Ouest
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_63d73b7493e7f430d67d0746c79fe690 = L.polyline(
+                [[45.19182352448991, 5.7756311459986405], [45.17330973015002, 5.836808815799354]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10, 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+        var popup_44cf0addd76bd820e3f6a2b4a74fac4b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_94c616bf1b2fba71be3f971be56909f0 = $(`<div id="html_94c616bf1b2fba71be3f971be56909f0" style="width: 100.0%; height: 100.0%;">Rétro-azimut depuis Crête Ouest (azimut 343.2°)</div>`)[0];
+                popup_44cf0addd76bd820e3f6a2b4a74fac4b.setContent(html_94c616bf1b2fba71be3f971be56909f0);
+            
+        
+
+        poly_line_63d73b7493e7f430d67d0746c79fe690.bindPopup(popup_44cf0addd76bd820e3f6a2b4a74fac4b)
+        ;
+
+        
+    
+    
+            poly_line_63d73b7493e7f430d67d0746c79fe690.bindTooltip(
+                `<div>
+                     Rétro ← Crête Ouest
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_a2cc8bf2d3872fc7a119568e0fa8a059 = L.marker(
+                [45.19463573751983, 5.729613114599864],
+                {
+}
+            ).addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+            var div_icon_cd97ecaf949498fb91fc71d40af8a7ed = L.divIcon({
+  "html": "\n        \u003cdiv style=\"font-size: 14px; font-weight: bold; \n                    color: white; background-color: purple; \n                    border-radius: 50%; width: 30px; height: 30px; \n                    display: flex; align-items: center; justify-content: center;\n                    border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);\"\u003e\n            4\n        \u003c/div\u003e\n        ",
+  "className": "empty",
+});
+        
+    
+        var popup_05af7dcc584a0b5d47eb81e01388de46 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_ea6e5756997f88cd6bacf4035a0fbac2 = $(`<div id="html_ea6e5756997f88cd6bacf4035a0fbac2" style="width: 100.0%; height: 100.0%;">         <div style="font-family: Arial, sans-serif; min-width: 250px;">             <h4 style="margin: 0 0 10px 0; color: #cc0000;">🏔️ Vallée</h4>             <table style="width: 100%; font-size: 12px;">                 <tr><td><b>Point #:</b></td><td>4</td></tr>                 <tr><td><b>Latitude:</b></td><td>45.194636°</td></tr>                 <tr><td><b>Longitude:</b></td><td>5.729613°</td></tr>                 <tr><td><b>Azimut gravé:</b></td><td>200.0°</td></tr>                 <tr><td><b>Azimut corrigé:</b></td><td>153.2°</td></tr>                 <tr><td><b>Distance table:</b></td><td>4834 m</td></tr>                 <tr><td><b>Statut:</b></td><td style="color: green;">                     ✓ Inlier (valide)                 </td></tr>             </table>         </div>         </div>`)[0];
+                popup_05af7dcc584a0b5d47eb81e01388de46.setContent(html_ea6e5756997f88cd6bacf4035a0fbac2);
+            
+        
+
+        marker_a2cc8bf2d3872fc7a119568e0fa8a059.bindPopup(popup_05af7dcc584a0b5d47eb81e01388de46)
+        ;
+
+        
+    
+    
+            marker_a2cc8bf2d3872fc7a119568e0fa8a059.bindTooltip(
+                `<div>
+                     #4 Vallée ✓
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_a2cc8bf2d3872fc7a119568e0fa8a059.setIcon(div_icon_cd97ecaf949498fb91fc71d40af8a7ed);
+            
+    
+            var poly_line_033eb24411088a8e601a66a2964cc30a = L.polyline(
+                [[45.222530002849595, 5.674480454115388], [45.251401503106734, 5.617416301231748]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.7, "smoothFactor": 1.0, "stroke": true, "weight": 2.5}
+            ).addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+        var popup_e03225cf1c1e5edab2d06da4ff202ecb = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_4b7a128c59bebadf943eb85b6a71df97 = $(`<div id="html_4b7a128c59bebadf943eb85b6a71df97" style="width: 100.0%; height: 100.0%;">Ligne de visée vers Vallée (azimut 153.2°)</div>`)[0];
+                popup_e03225cf1c1e5edab2d06da4ff202ecb.setContent(html_4b7a128c59bebadf943eb85b6a71df97);
+            
+        
+
+        poly_line_033eb24411088a8e601a66a2964cc30a.bindPopup(popup_e03225cf1c1e5edab2d06da4ff202ecb)
+        ;
+
+        
+    
+    
+            poly_line_033eb24411088a8e601a66a2964cc30a.bindTooltip(
+                `<div>
+                     Visée → Vallée
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_4a524e0025c71e2ab85975db27b21149 = L.polyline(
+                [[45.19463573751983, 5.729613114599864], [45.165778392503704, 5.786649289829769]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": "10, 5", "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+        var popup_9ef397cfb9fb70f4532ba63f620aefa3 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0222b9cfedc6ceb24aa55a5dd558301c = $(`<div id="html_0222b9cfedc6ceb24aa55a5dd558301c" style="width: 100.0%; height: 100.0%;">Rétro-azimut depuis Vallée (azimut 333.2°)</div>`)[0];
+                popup_9ef397cfb9fb70f4532ba63f620aefa3.setContent(html_0222b9cfedc6ceb24aa55a5dd558301c);
+            
+        
+
+        poly_line_4a524e0025c71e2ab85975db27b21149.bindPopup(popup_9ef397cfb9fb70f4532ba63f620aefa3)
+        ;
+
+        
+    
+    
+            poly_line_4a524e0025c71e2ab85975db27b21149.bindTooltip(
+                `<div>
+                     Rétro ← Vallée
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var layer_control_fe106ce9b711a4f0f7a1f1256fdbcedb_layers = {
+                base_layers : {
+                    "openstreetmap" : tile_layer_813f5ee4b314f72943db5a224ef66e87,
+                    "Terrain" : tile_layer_c068ceab2c98bb7c1a126d2059827006,
+                    "CartoDB Light" : tile_layer_d5086528eee8e280bdbabacb32db63f9,
+                },
+                overlays :  {
+                },
+            };
+            let layer_control_fe106ce9b711a4f0f7a1f1256fdbcedb = L.control.layers(
+                layer_control_fe106ce9b711a4f0f7a1f1256fdbcedb_layers.base_layers,
+                layer_control_fe106ce9b711a4f0f7a1f1256fdbcedb_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": false,
+  "autoZIndex": true,
+}
+            ).addTo(map_0f173c57726695acc4aae8d132f441ca);
+
+        
+    
+            var measure_control_0def54b0f928334361f79dd149cb832e = new L.Control.Measure(
+                {
+  "position": "topleft",
+  "primaryLengthUnit": "meters",
+  "secondaryLengthUnit": "kilometers",
+  "primaryAreaUnit": "sqmeters",
+  "secondaryAreaUnit": "acres",
+});
+            map_0f173c57726695acc4aae8d132f441ca.addControl(measure_control_0def54b0f928334361f79dd149cb832e);
+
+            // Workaround for using this plugin with Leaflet>=1.8.0
+            // https://github.com/ljagis/leaflet-measure/issues/171
+            L.Control.Measure.include({
+                _setCaptureMarkerIcon: function () {
+                    // disable autopan
+                    this._captureMarker.options.autoPanOnFocus = false;
+                    // default function
+                    this._captureMarker.setIcon(
+                        L.divIcon({
+                            iconSize: this._map.getSize().multiplyBy(2)
+                        })
+                    );
+                },
+            });
+
+        
+    
+            L.control.fullscreen(
+                {
+  "position": "topright",
+  "title": "Plein \u00e9cran",
+  "titleCancel": "Quitter plein \u00e9cran",
+  "forceSeparateButton": false,
+}
+            ).addTo(map_0f173c57726695acc4aae8d132f441ca);
+        
+    
+            var tile_layer_fcbd9a1330e8ee58f696611d5eb63f1e = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detect_retina": false, "max_native_zoom": 19, "max_zoom": 19, "min_zoom": 0, "no_wrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            );
+            var mini_map_e106c5615fc32c0540908d2dee787cdd = new L.Control.MiniMap(
+                tile_layer_fcbd9a1330e8ee58f696611d5eb63f1e,
+                {
+  "position": "bottomright",
+  "width": 150,
+  "height": 150,
+  "collapsedWidth": 25,
+  "collapsedHeight": 25,
+  "zoomLevelOffset": -5,
+  "centerFixed": false,
+  "zoomAnimation": false,
+  "toggleDisplay": true,
+  "autoToggleDisplay": false,
+  "minimized": false,
+}
+            );
+            map_0f173c57726695acc4aae8d132f441ca.addControl(mini_map_e106c5615fc32c0540908d2dee787cdd);
+        
+    
+            var mouse_position_8338e95abcd4734456fdcafdcb20cd42 = new L.Control.MousePosition(
+                {
+  "position": "bottomleft",
+  "separator": " | ",
+  "emptyString": "Unavailable",
+  "lngFirst": false,
+  "numDigits": 5,
+  "prefix": "Coordonn\u00e9es: ",
+}
+            );
+            mouse_position_8338e95abcd4734456fdcafdcb20cd42.options["latFormatter"] =
+                function(num) {return L.Util.formatNum(num, 6) + '° N';};
+            mouse_position_8338e95abcd4734456fdcafdcb20cd42.options["lngFormatter"] =
+                function(num) {return L.Util.formatNum(num, 6) + '° E';};
+            map_0f173c57726695acc4aae8d132f441ca.addControl(mouse_position_8338e95abcd4734456fdcafdcb20cd42);
+        
+</script>
+</html>
