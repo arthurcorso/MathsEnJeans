@@ -3,40 +3,40 @@ import random
 from typing import List, Tuple, Dict, Optional
 
 def normalize_deg(a: float) -> float:
-    """
-    Docstring pour normalize_deg
-    
-    :param a: Description
-    :type a: float
-    :return: Description
-    :rtype: float
-    """
+    """Normalise un angle en degrés dans l'intervalle [0, 360[."""
     a = a % 360.0
     return a if a >= 0 else a + 360.0
 
 def deg2rad(a: float) -> float:
+    """Convertit des degrés en radians."""
     return a * math.pi / 180.0
 
+
 def line_dir_from_angle_deg(angle_deg: float) -> Tuple[float, float]:
+    """Retourne le vecteur directeur (dx, dy) pour un angle donné en degrés."""
     r = deg2rad(angle_deg)
     return (math.cos(r), math.sin(r))
 
 def cross2(ax: float, ay: float, bx: float, by: float) -> float:
+    """Produit vectoriel 2D : ax*by - ay*bx."""
     return ax * by - ay * bx
+
 
 def intersect_lines(p1: Tuple[float, float], d1: Tuple[float, float],
                     p2: Tuple[float, float], d2: Tuple[float, float]) -> Optional[Tuple[float, float]]:
-    # p1 + t d1 = p2 + u d2
+    """Calcule l'intersection de deux droites définies par un point et une direction."""
     denom = cross2(d1[0], d1[1], d2[0], d2[1])
     if abs(denom) < 1e-12:
-        return None  # lignes presque parallèles
+        return None  # Lignes presque parallèles
+    
     dx = p2[0] - p1[0]
     dy = p2[1] - p1[1]
     t = cross2(dx, dy, d2[0], d2[1]) / denom
     return (p1[0] + t * d1[0], p1[1] + t * d1[1])
 
+
 def distance_point_to_line(p: Tuple[float, float], q: Tuple[float, float], d: Tuple[float, float]) -> float:
-    # distance = | cross(d, p - q) | / ||d||
+    """Calcule la distance d'un point p à une droite passant par q avec direction d."""
     px, py = p
     qx, qy = q
     dx, dy = d
@@ -47,14 +47,11 @@ def distance_point_to_line(p: Tuple[float, float], q: Tuple[float, float], d: Tu
 def least_squares_origin(lines: List[Tuple[Tuple[float, float], Tuple[float, float]]]) -> Tuple[float, float]:
     """
     Calcule l'origine optimale par moindres carrés.
-    Minimise la somme des carrés des distances aux droites.
     
-    Méthode mathématique:
-    Pour chaque droite (q, d), la distance d'un point (x, y) à la droite est:
-    dist = |d_y*(x - q_x) - d_x*(y - q_y)| / sqrt(d_x^2 + d_y^2)
+    Minimise la somme des carrés des distances aux droites en résolvant
+    le système linéaire 2x2 : A * [x0, y0]^T = b
     
-    On minimise sum(dist^2) en résolvant le système linéaire 2x2:
-    A * [x0, y0]^T = b
+    Complexité : O(n) où n est le nombre de droites.
     """
     if len(lines) == 0:
         return (0.0, 0.0)
@@ -95,8 +92,14 @@ def least_squares_origin(lines: List[Tuple[Tuple[float, float], Tuple[float, flo
 
 def compute_residual_for_phi(phi: float, observations: List[Dict]) -> Tuple[Tuple[float, float], float]:
     """
-    Calcule l'origine optimale et le résiduel pour un angle phi donné.
-    Retourne: (origin, residual)
+    Calcule l'origine optimale et le résiduel pour un angle φ donné.
+    
+    Args:
+        phi: Angle d'orientation de la table en degrés
+        observations: Liste des observations {x, y, azimuth_deg}
+    
+    Returns:
+        (origin, residual): Position optimale et résiduel moyen
     """
     lines = []
     for obs in observations:
@@ -115,14 +118,15 @@ def compute_residual_for_phi(phi: float, observations: List[Dict]) -> Tuple[Tupl
 
 def ternary_search_phi(observations: List[Dict], epsilon: float = 0.01) -> Tuple[float, Tuple[float, float], float]:
     """
-    Recherche ternaire pour trouver le phi optimal.
+    Recherche ternaire pour trouver l'angle φ optimal.
     
-    Méthode mathématique:
-    La recherche ternaire exploite l'unimodalité de la fonction résiduelle.
-    À chaque itération, on divise l'intervalle en trois parties et on élimine
-    le tiers avec la plus grande valeur. Complexité: O(log(360/epsilon)).
+    Exploite l'unimodalité de la fonction résiduelle. Divise l'intervalle
+    en trois parties à chaque itération.
     
-    Retourne: (phi_optimal, origin, residual)
+    Complexité : O(log(360/ε)) où ε est la précision souhaitée.
+    
+    Returns:
+        (phi_optimal, origin, residual)
     """
     left, right = 0.0, 360.0
     
@@ -145,14 +149,12 @@ def ternary_search_phi(observations: List[Dict], epsilon: float = 0.01) -> Tuple
 
 def gradient_descent_phi(observations: List[Dict], phi_init: float, learning_rate: float = 0.1, max_iter: int = 100) -> Tuple[float, Tuple[float, float], float]:
     """
-    Affine phi par descente de gradient.
+    Affine φ par descente de gradient avec dérivée numérique.
     
-    Méthode mathématique:
-    On calcule la dérivée numérique du résiduel par rapport à phi:
-    df/dphi ≈ (f(phi + h) - f(phi - h)) / (2h)
+    Calcule : df/dφ ≈ (f(φ + h) - f(φ - h)) / (2h)
+    Mise à jour : φ_new = φ - learning_rate * df/dφ
     
-    Puis on met à jour: phi_new = phi - learning_rate * df/dphi
-    Convergence typique en O(log(1/epsilon)) itérations.
+    Convergence typique en O(log(1/ε)) itérations.
     """
     phi = phi_init
     h = 0.01  # Pas pour la dérivée numérique
@@ -177,10 +179,7 @@ def gradient_descent_phi(observations: List[Dict], phi_init: float, learning_rat
     return (phi, origin_final, residual_final)
 
 def dense_search_phi(observations: List[Dict], step_deg: float = 0.1) -> Tuple[float, Tuple[float, float], float]:
-    """
-    Balayage dense et rapide sur tout l'intervalle [0, 360°].
-    Plus fin que l'ancien algorithme pour éviter de rater le minimum.
-    """
+    """Balayage dense sur [0, 360°] avec un pas configurable."""
     best = (None, None, float('inf'))
     phi = 0.0
     while phi < 360.0:
@@ -191,10 +190,7 @@ def dense_search_phi(observations: List[Dict], step_deg: float = 0.1) -> Tuple[f
     return best
 
 def local_search_around_phi(observations: List[Dict], phi_center: float, range_deg: float = 5.0, step_deg: float = 0.01) -> Tuple[Tuple[float, float], float, float]:
-    """
-    Recherche locale très fine autour d'un angle φ donné.
-    Retourne: (origin, phi, residual)
-    """
+    """Recherche locale fine autour d'un angle φ dans un intervalle donné."""
     best_origin = None
     best_phi = None
     best_resid = float('inf')
@@ -212,13 +208,15 @@ def local_search_around_phi(observations: List[Dict], phi_center: float, range_d
 
 def adaptive_multi_scale_search(observations: List[Dict]) -> Tuple[Tuple[float, float], float, float]:
     """
-    Recherche multi-échelle adaptative (coarse-to-fine) :
-    1. Balayage grossier (1°) pour identifier les zones prometteuses
-    2. Balayage fin (0.1°) sur les 3 meilleures zones
-    3. Recherche très fine (0.01°) sur la meilleure zone
+    Recherche multi-échelle adaptative (coarse-to-fine).
+    
+    Étapes :
+    1. Balayage grossier (1°) → zones prometteuses
+    2. Balayage fin (0.1°) → top 5 zones
+    3. Balayage ultra-fin (0.01°) → meilleure zone
     4. Affinage par gradient
     
-    Plus robuste et précis que multi-start pour données difficiles.
+    Plus robuste que multi-start pour données difficiles.
     """
     # Étape 1: Balayage grossier
     candidates = []
@@ -260,15 +258,21 @@ def ransac_estimate(observations: List[Dict], n_iterations: int = 100, threshold
     """
     RANSAC (Random Sample Consensus) pour éliminer les outliers.
     
-    Algorithme:
-    1. Répéter n_iterations fois:
-       - Choisir aléatoirement 3 observations
-       - Calculer l'origine et phi optimaux pour ces 3 points (méthode rapide)
-       - Compter combien d'observations sont des "inliers" (résiduel < threshold)
+    Algorithme :
+    1. Répéter n_iterations fois :
+       - Échantillonner 3 observations aléatoires
+       - Calculer le modèle (origine, φ) pour ces 3 points
+       - Compter les inliers (distance < threshold)
     2. Garder le modèle avec le plus d'inliers
-    3. Recalculer le modèle final avec tous les inliers (méthode précise)
+    3. Recalculer le modèle final avec tous les inliers
     
-    Retourne: (origin, phi, residual, inlier_indices)
+    Args:
+        observations: Liste des observations
+        n_iterations: Nombre d'itérations RANSAC
+        threshold: Seuil de distance pour considérer un point comme inlier (mètres)
+    
+    Returns:
+        (origin, phi, residual, inlier_indices)
     """
     if len(observations) < 3:
         # Pas assez de points pour RANSAC
@@ -335,20 +339,23 @@ def ransac_estimate(observations: List[Dict], n_iterations: int = 100, threshold
 
 def estimate_origin_and_phi(observations: List[Dict], method: str = 'ransac', return_inliers: bool = False) -> Tuple[Tuple[float, float], float, float] | Tuple[Tuple[float, float], float, float, List[int]]:
     """
-    observations : 
-        liste de dictionnaires avec les clés suivantes :      
-        - "x", "y" : coordonnées de l'objet d'intérêt (dans un système de référence cartésien plan)
-        - "azimuth_deg" : azimut gravé sur la table vers cet objet d'intérêt (degrés, 0 = N, 90 = E)
+    Estime la position et l'orientation d'une table d'orientation.
     
-    method: 
-      - 'ransac' (défaut, FORTEMENT RECOMMANDÉ): élimine automatiquement les outliers
-      - 'adaptive': recherche multi-échelle adaptative, très robuste
-      - 'ternary': recherche ternaire + gradient (rapide mais peut rater le minimum)
-      - 'multi-start': 8 descentes de gradient (bon compromis)
-      - 'gradient': descente de gradient seule (rapide, risqué)
-      - 'legacy': balayage linéaire simple (lent mais fiable)
+    Args:
+        observations: Liste de dict avec clés 'x', 'y', 'azimuth_deg'
+            - x, y : coordonnées de l'objet observé (mètres)
+            - azimuth_deg : azimut gravé sur la table (0=N, 90=E)
+        method: Méthode d'optimisation
+            - 'ransac' (RECOMMANDÉ) : élimine automatiquement les outliers
+            - 'adaptive' : recherche multi-échelle, très robuste
+            - 'ternary' : recherche ternaire + gradient
+            - 'multi-start' : 8 descentes de gradient
+            - 'gradient' : descente de gradient simple
+            - 'legacy' : balayage linéaire (lent)
+        return_inliers: Si True, retourne aussi les indices des inliers
     
-    Returns: (origin_xy, phi_deg, residual)
+    Returns:
+        (origin, phi, residual) ou (origin, phi, residual, inlier_indices)
     """
     if method == 'ransac':
         origin, phi, resid, inliers = ransac_estimate(observations, n_iterations=100, threshold=50.0)

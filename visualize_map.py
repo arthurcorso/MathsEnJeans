@@ -1,6 +1,11 @@
 """
-Module de visualisation avec OpenStreetMap et Folium
-Crée une carte interactive montrant la table d'orientation, les curiosités, et les droites
+Module de visualisation interactive avec OpenStreetMap et Folium.
+
+Génère une carte interactive HTML montrant :
+- La position de la table d'orientation
+- Les curiosités observées (marqueurs numérotés)
+- Les lignes de visée et rétro-azimuts
+- Les inliers/outliers détectés par RANSAC
 """
 
 import folium
@@ -11,19 +16,12 @@ from table import estimate_origin_and_phi, line_dir_from_angle_deg, normalize_de
 
 
 def meters_to_degrees(meters: float, latitude: float = 45.0) -> float:
-    """
-    Convertit des mètres en degrés de latitude/longitude.
-    Approximation pour petites distances.
-    """
-    # 1 degré de latitude ≈ 111 km
-    # 1 degré de longitude ≈ 111 km × cos(latitude)
+    """Convertit des mètres en degrés (approximation pour petites distances)."""
     return meters / (111000.0 * math.cos(math.radians(latitude)))
 
 
 def project_point(origin: Tuple[float, float], direction: Tuple[float, float], distance: float) -> Tuple[float, float]:
-    """
-    Projette un point depuis l'origine dans une direction donnée.
-    """
+    """Projette un point depuis l'origine dans une direction donnée."""
     dx, dy = direction
     return (origin[0] + dx * distance, origin[1] + dy * distance)
 
@@ -38,20 +36,18 @@ def create_interactive_map(observations: List[Dict],
                           center_lon: float = 6.0,
                           output_file: str = "table_orientation_map.html") -> str:
     """
-    Crée une carte interactive avec OpenStreetMap montrant :
-    - La table d'orientation (marqueur bleu)
-    - Les curiosités observées (marqueurs rouges)
-    - Les droites de visée (lignes vertes)
-    - Les rétro-azimuts (lignes oranges)
+    Génère une carte interactive OpenStreetMap.
     
     Args:
-        observations: Liste des observations avec 'x', 'y', 'azimuth_deg', optionnel 'name'
-        origin: Position estimée de la table (x, y). Si None, sera calculée.
-        phi: Orientation estimée. Si None, sera calculée.
-        use_latlon: Si True, x et y sont des coordonnées lat/lon. Sinon, mètres projetés.
-        center_lat: Latitude du centre (pour conversion mètres→degrés si use_latlon=False)
-        center_lon: Longitude du centre (pour conversion mètres→degrés si use_latlon=False)
-        output_file: Nom du fichier HTML de sortie
+        observations: Liste de dict {'x', 'y', 'azimuth_deg', 'name' (opt)}
+        origin: Position de la table (x, y). Si None, calculée avec RANSAC
+        phi: Orientation de la table en degrés. Si None, calculée avec RANSAC
+        residual: Résiduel moyen. Si None, calculé
+        inliers_mask: Masque booléen des inliers. Si None, calculé
+        use_latlon: Si True, x/y sont lat/lon. Sinon, mètres projetés
+        center_lat: Latitude centre (conversion mètres→degrés)
+        center_lon: Longitude centre (conversion mètres→degrés)
+        output_file: Nom du fichier HTML généré
     
     Returns:
         Chemin du fichier HTML créé
